@@ -38,6 +38,8 @@ async function run() {
     app.get('/products/:categories',async(req,res)=>{
         const categories = req.params.categories;
         console.log(categories)
+        const result = await kidsLifeCollection.find({subCategory: categories}).toArray();
+        res.send(result)
 
     })
 
