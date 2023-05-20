@@ -33,9 +33,13 @@ async function run() {
     // Send a ping to confirm a successful connection
 
 
-    const kidsLifeCollection = client.db('kidsLife').collection(products)
+    const kidsLifeCollection = client.db('kidsLife').collection('products')
 
-    
+    app.get('/products/:categories',async(req,res)=>{
+        const categories = req.params.categories;
+        console.log(categories)
+
+    })
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
