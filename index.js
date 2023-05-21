@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const {
+  MongoClient,
+  ServerApiVersion
+} = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -35,15 +38,24 @@ async function run() {
 
     const kidsLifeCollection = client.db('kidsLife').collection('products')
 
-    app.get('/products/:categories',async(req,res)=>{
-        const categories = req.params.categories;
-        
-        const result = await kidsLifeCollection.find({subCategory: categories}).toArray();
+    app.get('/products', async (req, res) => {
+        const result = await kidsLifeCollection.find().toArray()
         res.send(result)
+    })
+
+    app.get('/products/:categories', async (req, res) => {
+      const categories = req.params.categories;
+
+      const result = await kidsLifeCollection.find({
+        subCategory: categories
+      }).toArray();
+      res.send(result)
 
     })
 
-    await client.db("admin").command({ ping: 1 });
+    await client.db("admin").command({
+      ping: 1
+    });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
@@ -57,10 +69,10 @@ run().catch(console.dir);
 //api
 
 app.get('/', (req, res) => {
-res.send('Kids Are Busy Now To Buy Toys')
+  res.send('Kids Are Busy Now To Buy Toys')
 })
 
 //listen
-app.listen(port,()=>{
-    console.log(`kids life running on port:${port}`)
+app.listen(port, () => {
+  console.log(`kids life running on port:${port}`)
 })
