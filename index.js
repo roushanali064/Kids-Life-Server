@@ -3,7 +3,8 @@ const cors = require('cors');
 require('dotenv').config()
 const {
   MongoClient,
-  ServerApiVersion
+  ServerApiVersion,
+  ObjectId
 } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
@@ -61,15 +62,22 @@ async function run() {
     })
 
     app.get('/toys', async(req,res)=>{
-      console.log(req.query.email)
+      
       let query = {}
       if(req.query?.email){
         query = {
           sellerEmail: req.query.email
         }
       }
-      console.log(query)
       const result = await kidsLifeCollection.find(query).toArray();
+      res.send(result)
+    })
+
+    app.delete('/toys/:id', async(req,res)=>{
+      const id = req.params.id;
+      
+      const query = {_id: new ObjectId(id)}
+      const result = await kidsLifeCollection.deleteOne(query)
       res.send(result)
     })
 
