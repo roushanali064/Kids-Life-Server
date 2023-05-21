@@ -33,13 +33,13 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    //  client.connect();
     // Send a ping to confirm a successful connection
 
 
     const kidsLifeCollection = client.db('kidsLife').collection('products')
 
-    app.post('/product', async(req, res) => {
+    app.post('/product', async (req, res) => {
       const product = req.body;
       const result = await kidsLifeCollection.insertOne(product)
       res.send(result)
@@ -60,33 +60,63 @@ async function run() {
 
     })
 
-    app.get('/toys', async(req,res)=>{
-      
+    
+
+    app.get('/toys', async (req, res) => {
+
       let query = {}
-      if(req.query?.email){
+      if (req.query?.email) {
         query = {
           sellerEmail: req.query.email
         }
       }
-      const result = await kidsLifeCollection.find(query).toArray();
+      const sortOperation = {
+        price: 1
+      }
+      const result = await kidsLifeCollection.find(query).sort(sortOperation).toArray();
       res.send(result)
     })
 
-    app.get('/toy/:id', async(req,res)=>{
+    app.get('/toy/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id)
-      const query = {_id: new ObjectId(id)}
+
+      const query = {
+        _id: new ObjectId(id)
+      }
       const result = await kidsLifeCollection.findOne(query)
       res.send(result)
     })
 
-    app.delete('/toys/:id', async(req,res)=>{
+    app.delete('/toys/:id', async (req, res) => {
       const id = req.params.id;
-      
-      const query = {_id: new ObjectId(id)}
+
+      const query = {
+        _id: new ObjectId(id)
+      }
       const result = await kidsLifeCollection.deleteOne(query)
       res.send(result)
     })
+
+    app.patch('/update/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const update = { $set: req.body };
+      
+        const result = await kidsLifeCollection.updateOne(filter, update);
+        res.send(result)
+      
+        // if (result.modifiedCount === 1) {
+        //   res.send({ message: 'Document updated successfully' });
+        // } else {
+        //   res.status(404).send({ error: 'Document not found' });
+        // }
+      } catch (error) {
+        res.status(500).send({ error: 'Internal server error' });
+      }
+    });
+    
+    
 
     await client.db("admin").command({
       ping: 1
