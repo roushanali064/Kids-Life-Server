@@ -97,6 +97,21 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/search', async (req, res) => {
+      try {
+        const name = req.query.name;
+        
+    
+        const filter = { name: { $regex: name, $options: 'i' } };
+    
+        const result = await kidsLifeCollection.find(filter).toArray();
+    
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: 'Internal server error' });
+      }
+    });
+
     app.patch('/update/:id', async (req, res) => {
       try {
         const id = req.params.id;
