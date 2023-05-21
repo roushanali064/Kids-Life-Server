@@ -38,9 +38,16 @@ async function run() {
 
     const kidsLifeCollection = client.db('kidsLife').collection('products')
 
+    app.post('/product', async(req, res) => {
+      const product = req.body;
+      console.log(product)
+      const result = await kidsLifeCollection.insertOne(product)
+      res.send(result)
+    })
+
     app.get('/products', async (req, res) => {
-        const result = await kidsLifeCollection.find().toArray()
-        res.send(result)
+      const result = await kidsLifeCollection.find().toArray()
+      res.send(result)
     })
 
     app.get('/products/:categories', async (req, res) => {
