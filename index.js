@@ -60,6 +60,19 @@ async function run() {
 
     })
 
+    app.get('/toys', async(req,res)=>{
+      console.log(req.query.email)
+      let query = {}
+      if(req.query?.email){
+        query = {
+          sellerEmail: req.query.email
+        }
+      }
+      console.log(query)
+      const result = await kidsLifeCollection.find(query).toArray();
+      res.send(result)
+    })
+
     await client.db("admin").command({
       ping: 1
     });
