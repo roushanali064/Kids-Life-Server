@@ -41,13 +41,12 @@ async function run() {
 
     app.post('/product', async(req, res) => {
       const product = req.body;
-      console.log(product)
       const result = await kidsLifeCollection.insertOne(product)
       res.send(result)
     })
 
     app.get('/products', async (req, res) => {
-      const result = await kidsLifeCollection.find().toArray()
+      const result = await kidsLifeCollection.find().limit(20).toArray()
       res.send(result)
     })
 
